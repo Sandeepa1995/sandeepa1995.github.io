@@ -13,8 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47",
     "express": "^4.15.3",
     "mongodb": "^2.2.29",
+    "mongoose": "^4.11.1",
     "socket.io": "^2.0.3"
   }
 }

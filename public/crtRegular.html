@@ -73,7 +73,7 @@
                 <!--</a>-->
                 <!--</li>-->
                 <li>
-                    <a href="index.html">
+                    <a href="mainNotices.html">
                         <i class="pe-7s-notebook"></i>
                         <p>Notices</p>
                     </a>
@@ -147,7 +147,7 @@
         </nav>
 
 
-        <div class="content" >
+        <div class="content animated fadeInDown" >
         <div class="container" style=" padding: 25px 25px 25px 25px; color: black; background-color: #f1f1f1; border-radius: 25px">
             <div class="row">
                 <div class="col-sm-4">
@@ -262,67 +262,38 @@
         <div class="container animated fadeInDown" id="specificOptions" style="margin-top: 25px; padding: 25px 0px 25px 0px; color: black; background-color: #f1f1f1;  border-radius: 25px; display: none">
             <div class="container" style="margin-bottom: 10px;">
                 <div class="dropdown col-sm-3">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 50px">Choose Department
-                        <span class="caret"></span></button>
-                    <ul class="dropdown-menu" style="margin-left: 50px;" >
-                        <li><a href="#">All</a></li>
-                        <li><a href="#">CSE</a></li>
-                        <li><a href="#">Civil</a></li>
-                        <li><a href="#">Chemical</a></li>
-                    </ul>
+                    <div class="form-group">
+                        <label for="crtRegularDepartment" style="color: black">Select a department:</label>
+                        <select class="form-control" id="crtRegularDepartment" onchange="onListChange()">
+                            <option>All</option>
+                            <!--<option>2</option>-->
+                        </select>
+                    </div>
                 </div>
-                <div class="dropdown col-sm-3">
-                    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-left: 50px">Choose Batch
-                        <span class="caret"></span></button>
-                    <ul class="dropdown-menu" style="margin-left: 50px;" >
-                        <li><a href="#">All</a></li>
-                        <li><a href="#">Staff</a></li>
-                        <li><a href="#">Students</a></li>
-                        <li><a href="#">2015</a></li>
-                    </ul>
+                <div class="dropdown col-sm-3 col-sm-offset-1">
+                    <div class="form-group">
+                        <label for="crtRegularBatch" style="color: black">Select a batch:</label>
+                        <select class="form-control" id="crtRegularBatch" onchange="onListChange()">
+                            <option>All</option>
+                            <!--<option>2</option>-->
+                        </select>
+                    </div>
                 </div>
             </div>
-
-            <!--<div class="container" style="width: 95%">-->
-                <!--<div class="list-group" id="checkGrp">-->
-                    <!--<label style="color: black">Custom Selection</label>-->
-                    <!--<div class="checkbox">-->
-                        <!--<label>-->
-                            <!--<input type="checkbox" name="optionsCheckboxes" checked>-->
-                            <!--CheckBox1-->
-                        <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="checkbox">-->
-                        <!--<label>-->
-                            <!--<input type="checkbox" name="optionsCheckboxes" checked>-->
-                            <!--CheckBox2-->
-                        <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="checkbox">-->
-                        <!--<label>-->
-                            <!--<input type="checkbox" name="optionsCheckboxes" checked>-->
-                            <!--CheckBox3-->
-                        <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="checkbox">-->
-                        <!--<label>-->
-                            <!--<input type="checkbox" name="optionsCheckboxes" checked>-->
-                            <!--CheckBox4-->
-                        <!--</label>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
-            <div class="card">
+            <div class="container-fluid" id="loaderBody" style="align-content: center" >
+                <img src="img/Double%20Ring.gif" style="margin-left: auto;	margin-right: auto;	display: block; ">
+            </div>
+            <div class="card" id="selectionBody" style="display: none">
                 <div class="content table-responsive table-full-width">
-                    <table class="table table-hover table-striped">
+                    <table class="table table-hover table-striped" id="noticeSelectionTbl">
                         <thead>
                         <tr>
                             <th></th>
-                            <th>Index No.</th>
-                            <th>Name</th>
-                            <th>Deparment</th>
-                            <th>Batch</th>
-                            <th>Type</th>
+                            <th onclick="sortSelecTable(1)" style="cursor: pointer">Index No.</th>
+                            <th onclick="sortSelecTable(2)" style="cursor: pointer">Name</th>
+                            <th onclick="sortSelecTable(3)" style="cursor: pointer">Deparment</th>
+                            <th onclick="sortSelecTable(4)" style="cursor: pointer">Batch</th>
+                            <th onclick="sortSelecTable(5)" style="cursor: pointer">Type</th>
                         </tr></thead>
                         <tbody id="checkGrp" >
                         </tbody>
@@ -331,7 +302,7 @@
             </div>
         </div>
 
-        <div class="contaiiner" style="margin-top: 25px; padding: 25px 0px 25px 0px; color: black; background-color: #f1f1f1; text-align: center; border-radius: 25px">
+        <div class="contaiiner animated fadeInDown" style="margin-top: 25px; padding: 25px 0px 25px 0px; color: black; background-color: #f1f1f1; text-align: center; border-radius: 25px">
             <button id="finish" class="btn btn-danger" type="button" onclick="finish()" >Create new notice</button>
         </div>
 
@@ -416,7 +387,13 @@
     window.onload=function(){
         getCreator();
         loadAll();
+        getSelectionList();
+        //setTimeout(sortTbl,500);
     };
+
+    function sortTbl() {
+        sortSelecTable(1);
+    }
 </script>
 <!--<script type="text/javascript">-->
 <!--$(document).ready(function () {-->
