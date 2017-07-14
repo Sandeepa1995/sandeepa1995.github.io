@@ -12,6 +12,7 @@ var alledittargets=[];
 var checkEditNum=0;
 var noticeID = sessionStorage.getItem('editID');
 var targetEditGrp;
+var thisState;
 
 function showSpeci() {
     document.getElementById("specificOptions").style.display='block';
@@ -31,7 +32,8 @@ function finishEdit() {
             title: newTitile,
             content: newContent,
             iD:noticeID,
-            approver:sessionStorage.getItem('approverID')
+            //approver:sessionStorage.getItem('approverID'),
+            state:thisState
         });
         location.href='mainNotices.html';
     }
@@ -81,9 +83,12 @@ socket.on('giveEditDetails',(notice)=>{
     console.log('Got notice',notice);
     var editTitle = notice.title;
     // $("#inputEditTitle").append(editTitle);
-    document.getElementById('inputEditTitle').value= editTitle;
+    if(editTitle!=null) {
+        document.getElementById('inputEditTitle').value = editTitle;
+    }
     quilledt.setContents(notice.content);
     targetEditGrp=notice.receivers;
+    thisState=notice.state;
     // for (var indx = 0; indx < alledittargets.length; ++indx) {
     //     if (notice.receivers.indexOf(alledittargets[indx])==-1){
     //

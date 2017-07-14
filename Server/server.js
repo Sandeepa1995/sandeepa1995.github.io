@@ -126,7 +126,7 @@ var User = mongoose.model('User',{
 
     },
     w8nApproval:{
-        default:""
+
     },
     aD_ID:{
 
@@ -135,7 +135,7 @@ var User = mongoose.model('User',{
 
     },
     w8nApproval_AD:{
-        default:""
+
     },
     event_ID:{
 
@@ -144,7 +144,7 @@ var User = mongoose.model('User',{
 
     },
     w8nApproval_Event:{
-        default:""
+
     }
 });
 
@@ -236,6 +236,7 @@ io.on('connection',(socket)=>{
             //console.log(newRegNotice.senderID,newRegNotice.approver);
             updateUseronCreate(newRegNotice.receivers,doc._id);
             updateSenderonCreate(newRegNotice.senderID,doc._id);
+            console.log(newRegNotice.approver);
             updateApproveronCreate(newRegNotice.approver,doc._id);
         },(e)=>{
             return console.log('Unable to insert - createNotice',e);
@@ -264,6 +265,7 @@ io.on('connection',(socket)=>{
             //console.log(newRegNotice.senderID,newRegNotice.approver);
             updateUseronCreate(newRegNotice.receivers,doc._id);
             updateSenderonCreate(newRegNotice.senderID,doc._id);
+            console.log(newRegNotice.approver);
             updateApproveronCreate(newRegNotice.approver,doc._id);
         },(e)=>{
             return console.log('Unable to insert - createNotice',e);
@@ -341,6 +343,112 @@ io.on('connection',(socket)=>{
                 //type: docs.type
             });
         }, (err)=>{
+            console.log('Unable to find intended and sent notices',err);
+        });
+
+        //mongoose.connection.close();
+    });
+
+    socket.on('getNotifics',(user)=>{
+        checkForExpirations();
+        //mongoose.connect('mongodb://localhost:27017/NoticesDB');
+        //console.log('run');
+        User.findOne({iD:user.index}).then((docs)=>{
+            var notis=0;
+            var auths=0;
+            if(docs.intended_ID.length>0) {
+                // console.log(docs.intended_ID);
+                for (var indx = 0; indx < docs.intended_ID.length; ++indx) {
+                    if (docs.intended_ID[indx].read == true) {
+                        Notice.findOne({_id: ObjectID(docs.intended_ID[indx].iD)}).then((docs2)=>{
+                            if(docs2.state=="approved"){
+                                //console.log(docs2);
+                                notis += 1;
+                            }
+                        }, (err)=>{
+                            console.log('Unable to find notice',err);
+                        });
+                    }
+                }
+            }
+
+            if(docs.event_ID.length>0) {
+                // console.log(docs.event_ID);
+                for (var indx2 = 0; indx2 < docs.event_ID.length; ++indx2) {
+                    if (docs.event_ID[indx2].read == true) {
+                        Event.findOne({_id: ObjectID(docs.event_ID[indx].iD)}).then((docs2)=>{
+                            if(docs2.state=="approved"){
+                                //console.log(docs2);
+                                notis += 1;
+                            }
+                        }, (err)=>{
+                            console.log('Unable to find notice',err);
+                        });
+                    }
+                }
+            }
+
+            if(docs.w8nApproval.length>0) {
+                // console.log(docs.w8nApproval);
+                for (var indx3 = 0; indx3 < docs.w8nApproval.length; ++indx3) {
+                    if (docs.w8nApproval[indx3].read == true) {
+                        Notice.findOne({_id: ObjectID(docs.w8nApproval[indx3].iD)}).then((docs2)=>{
+                            if(docs2.state=="new"){
+                                //console.log(docs2);
+                                auths += 1;
+                            }
+                        }, (err)=>{
+                            console.log('Unable to find notice',err);
+                        });
+                    }
+                }
+            }
+
+            if(docs.w8nApproval_Event.length>0) {
+                // console.log(docs.w8nApproval_Event);
+                for (var indx4 = 0; indx4 < docs.w8nApproval_Event.length; ++indx4) {
+                    if (docs.w8nApproval_Event[indx4].read == true) {
+                        Event.findOne({_id: ObjectID(docs.w8nApproval_Event[indx4].iD)}).then((docs2)=>{
+                            if(docs2.state=="new"){
+                                //console.log(docs2);
+                                auths += 1;
+                            }
+                        }, (err)=>{
+                            console.log('Unable to find notice',err);
+                        });
+                    }
+                }
+            }
+
+            if(docs.w8nApproval_AD.length>0) {
+                // console.log(docs.w8nApproval_AD);
+                for (var indx5 = 0; indx5 < docs.w8nApproval_AD.length; ++indx5) {
+                    if (docs.w8nApproval_AD[indx5].read == true) {
+                        Advertisement.findOne({_id: ObjectID(docs.w8nApproval_AD[indx5].iD)}).then((docs2)=>{
+                            if(docs2.state=="new"){
+                                //console.log(docs2);
+                                auths += 1;
+                            }
+                        }, (err)=>{
+                            console.log('Unable to find notice',err);
+                        });
+                    }
+                }
+            }
+
+            function giveNotifics(){
+                socket.emit('giveNotifics',{
+                    notiNum:notis,
+                    authNum:auths
+                });
+                console.log(notis,auths);
+            }
+
+            setTimeout(giveNotifics,2000);
+
+
+            //console.log(notis,auths);
+            }, (err)=>{
             console.log('Unable to find intended and sent notices',err);
         });
 
@@ -470,7 +578,8 @@ io.on('connection',(socket)=>{
                 sender:docs.sender,
                 date:(dateN.toLocaleString()),
                 state: docs.state,
-                typeN: docs.type
+                typeN: docs.type,
+                read: notice.read
             });
         }, (err)=>{
             console.log('Unable to find notice',err);
@@ -478,6 +587,7 @@ io.on('connection',(socket)=>{
 
         //mongoose.connection.close();
     });
+
 
     //Search Inbox list populator
     socket.on('searchNDetails',(notice)=>{
@@ -492,7 +602,8 @@ io.on('connection',(socket)=>{
                     sender: docs.sender,
                     date: (dateN.toLocaleString()),
                     state: docs.state,
-                    typeN: docs.type
+                    typeN: docs.type,
+                    read: notice.read
                 });
             }
         }, (err)=>{
@@ -553,7 +664,8 @@ io.on('connection',(socket)=>{
                 id:docs._id,
                 title:docs.title,
                 date:(dateN.toLocaleString()),
-                typeN: docs.type
+                typeN: docs.type,
+                read: notice.read
             });
         }, (err)=>{
             console.log('Unable to find notice',err);
@@ -572,7 +684,8 @@ io.on('connection',(socket)=>{
                     id: docs._id,
                     title: docs.title,
                     date: (dateN.toLocaleString()),
-                    typeN: docs.type
+                    typeN: docs.type,
+                    read: notice.read
                 });
             }
         }, (err)=>{
@@ -651,7 +764,8 @@ io.on('connection',(socket)=>{
                 id:docs._id,
                 title:docs.title,
                 date:(dateN.toLocaleString()),
-                typeN: docs.type
+                typeN: docs.type,
+                read: notice.read
             });
         }, (err)=>{
             console.log('Unable to find notice',err);
@@ -667,7 +781,8 @@ io.on('connection',(socket)=>{
                     id: docs._id,
                     title: docs.title,
                     date: (dateN.toLocaleString()),
-                    typeN: docs.type
+                    typeN: docs.type,
+                    read: notice.read
                 });
             }
         }, (err)=>{
@@ -686,7 +801,8 @@ io.on('connection',(socket)=>{
                 date:(dateN.toLocaleString()),
                 state: docs.state,
                 typeN: docs.type,
-                exDate: docs.exDate
+                exDate: docs.exDate,
+                read: notice.read
             });
         }, (err)=>{
             console.log('Unable to find notice',err);
@@ -704,7 +820,8 @@ io.on('connection',(socket)=>{
                     sender:docs.sender,
                     date:(dateN.toLocaleString()),
                     state: docs.state,
-                    typeN: docs.type
+                    typeN: docs.type,
+                    read: notice.read
                 });
             }
         }, (err)=>{
@@ -754,7 +871,8 @@ io.on('connection',(socket)=>{
                 id:docs._id,
                 title:docs.title,
                 date:(dateN.toLocaleString()),
-                typeN: docs.type
+                typeN: docs.type,
+                read: notice.read
             });
         }, (err)=>{
             console.log('Unable to find notice',err);
@@ -770,7 +888,8 @@ io.on('connection',(socket)=>{
                     id: docs._id,
                     title: docs.title,
                     date: (dateN.toLocaleString()),
-                    typeN: docs.type
+                    typeN: docs.type,
+                    read: notice.read
                 });
             }
         }, (err)=>{
@@ -793,6 +912,231 @@ io.on('connection',(socket)=>{
         }, (err)=>{
             console.log('Unable to find notice',err);
         });
+    });
+
+    socket.on('readNoticeDis',(notice)=>{
+        //mongoose.connect('mongodb://localhost:27017/NoticesDB');
+        User.findOne({iD:notice.user}).then((docs)=>{
+            for (var indx = 0; indx < docs.intended_ID.length; ++indx){
+                var notce = docs.intended_ID[indx];
+                //console.log(notce.iD.toString(),ObjectID(notice.iD).toString());
+                if((notce.iD.toString()==ObjectID(notice.iD).toString())&&(notce.read.toString()=="true")){
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $pull:{
+                            intended_ID: {iD:ObjectID(notice.iD),read:true}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $push:{
+                            intended_ID: {iD:ObjectID(notice.iD),read:false}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+                }
+
+            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
+        });
+
+    });
+
+    socket.on('readAuthDis',(notice)=>{
+        //mongoose.connect('mongodb://localhost:27017/NoticesDB');
+        User.findOne({iD:notice.user}).then((docs)=>{
+            for (var indx = 0; indx < docs.w8nApproval.length; ++indx){
+                var notce = docs.w8nApproval[indx];
+                //console.log(notce.iD.toString(),ObjectID(notice.iD).toString());
+                if((notce.iD.toString()==ObjectID(notice.iD).toString())&&(notce.read.toString()=="true")){
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $pull:{
+                            w8nApproval: {iD:ObjectID(notice.iD),read:true}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $push:{
+                            w8nApproval: {iD:ObjectID(notice.iD),read:false}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+                }
+
+            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
+        });
+
+    });
+
+    socket.on('readAuthADDis',(notice)=>{
+        //mongoose.connect('mongodb://localhost:27017/NoticesDB');
+        User.findOne({iD:notice.user}).then((docs)=>{
+            for (var indx = 0; indx < docs.w8nApproval_AD.length; ++indx){
+                var notce = docs.w8nApproval_AD[indx];
+                //console.log(notce.iD.toString(),ObjectID(notice.iD).toString());
+                if((notce.iD.toString()==ObjectID(notice.iD).toString())&&(notce.read.toString()=="true")){
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $pull:{
+                            w8nApproval_AD: {iD:ObjectID(notice.iD),read:true}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $push:{
+                            w8nApproval_AD: {iD:ObjectID(notice.iD),read:false}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+                }
+
+            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
+        });
+
+    });
+
+    socket.on('readEventDis',(notice)=>{
+        //mongoose.connect('mongodb://localhost:27017/NoticesDB');
+        User.findOne({iD:notice.user}).then((docs)=>{
+            for (var indx = 0; indx < docs.event_ID.length; ++indx){
+                var notce = docs.event_ID[indx];
+                //console.log(notce.iD.toString(),ObjectID(notice.iD).toString());
+                if((notce.iD.toString()==ObjectID(notice.iD).toString())&&(notce.read.toString()=="true")){
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $pull:{
+                            event_ID: {iD:ObjectID(notice.iD),read:true}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $push:{
+                            event_ID: {iD:ObjectID(notice.iD),read:false}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+                }
+
+            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
+        });
+
+    });
+
+    socket.on('readAuthEventDis',(notice)=>{
+        //mongoose.connect('mongodb://localhost:27017/NoticesDB');
+        User.findOne({iD:notice.user}).then((docs)=>{
+            for (var indx = 0; indx < docs.w8nApproval_Event.length; ++indx){
+                var notce = docs.w8nApproval_Event[indx];
+                //console.log(notce.iD.toString(),ObjectID(notice.iD).toString());
+                if((notce.iD.toString()==ObjectID(notice.iD).toString())&&(notce.read.toString()=="true")){
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $pull:{
+                            w8nApproval_Event: {iD:ObjectID(notice.iD),read:true}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+
+                    User.findOneAndUpdate({
+                        iD:notice.user,
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    },{
+                        $push:{
+                            w8nApproval_Event: {iD:ObjectID(notice.iD),read:false}
+                        }
+                    },{
+                        overwrite:true
+                    },(e)=>{
+                        if(e) {
+                            console.log('updateApproveronCreate Error', e);
+                        }
+                    });
+                }
+
+            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
+        });
+
     });
 
     //Sent detail obtainer(Also used for obtaining Authorizing Details)
@@ -1047,53 +1391,178 @@ io.on('connection',(socket)=>{
 
     //Remove Authorization handled notice
     socket.on('removeNoticeAprvl',(item)=>{
-        User.findOneAndUpdate({
-            iD:item.iD
-        },{
-            $pull:{
-                w8nApproval: ObjectID(item.noticeiD)
+        // User.findOneAndUpdate({
+        //     iD:item.iD
+        // },{
+        //     $pull:{
+        //         w8nApproval: ObjectID(item.noticeiD)
+        //     }
+        // },{
+        //     overwrite:true
+        // },(e)=>{
+        //     if(e) {
+        //         console.log('Unable to remove auth notice', e);
+        //     }
+        // });
+
+        User.findOne({iD:item.iD}).then((docs)=>{
+            for (var indx = 0; indx < docs.w8nApproval.length; ++indx){
+                var notce = docs.w8nApproval[indx];
+                //console.log(notce.iD.toString(),ObjectID(notice.iD).toString());
+                if((notce.iD.toString()==ObjectID(item.noticeiD).toString())&&(notce.read.toString()=="true")) {
+                    User.findOneAndUpdate({
+                        iD: item.iD
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    }, {
+                        $pull: {
+                            w8nApproval: {iD: ObjectID(item.noticeiD), read: true}
+                        }
+                    }, {
+                        overwrite: true
+                    }, (e) => {
+                        if (e) {
+                            console.log('Unable to remove auth notice', e);
+                        }
+                    });
+                }
+
+                else if((notce.iD.toString()==ObjectID(item.noticeiD).toString())&&(notce.read.toString()=="false")) {
+                    User.findOneAndUpdate({
+                        iD: item.iD
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    }, {
+                        $pull: {
+                            w8nApproval: {iD: ObjectID(item.noticeiD), read: false}
+                        }
+                    }, {
+                        overwrite: true
+                    }, (e) => {
+                        if (e) {
+                            console.log('Unable to remove auth notice', e);
+                        }
+                    });
+                }
             }
-        },{
-            overwrite:true
-        },(e)=>{
-            if(e) {
-                console.log('Unable to remove auth notice', e);
-            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
         });
     });
 
     //Remove Authorization handled AD
     socket.on('removeADAprvl',(item)=>{
-        User.findOneAndUpdate({
-            iD:item.iD
-        },{
-            $pull:{
-                w8nApproval_AD: ObjectID(item.noticeiD)
+        // User.findOneAndUpdate({
+        //     iD:item.iD
+        // },{
+        //     $pull:{
+        //         w8nApproval_AD: ObjectID(item.noticeiD)
+        //     }
+        // },{
+        //     overwrite:true
+        // },(e)=>{
+        //     if(e) {
+        //         console.log('Unable to remove auth notice', e);
+        //     }
+        // });
+        User.findOne({iD:item.iD}).then((docs)=>{
+            for (var indx = 0; indx < docs.w8nApproval_AD.length; ++indx){
+                var notce = docs.w8nApproval_AD[indx];
+                //console.log(notce.iD.toString(),ObjectID(docs.iD).toString());
+                if((notce.iD.toString()==ObjectID(item.noticeiD).toString())&&(notce.read.toString()=="true")) {
+                    User.findOneAndUpdate({
+                        iD: item.iD
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    }, {
+                        $pull: {
+                            w8nApproval_AD: {iD: ObjectID(item.noticeiD), read: true}
+                        }
+                    }, {
+                        overwrite: true
+                    }, (e) => {
+                        if (e) {
+                            console.log('Unable to remove auth notice', e);
+                        }
+                    });
+                }
+
+                else if((notce.iD.toString()==ObjectID(item.noticeiD).toString())&&(notce.read.toString()=="false")) {
+                    User.findOneAndUpdate({
+                        iD: item.iD
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    }, {
+                        $pull: {
+                            w8nApproval_AD: {iD: ObjectID(item.noticeiD), read: false}
+                        }
+                    }, {
+                        overwrite: true
+                    }, (e) => {
+                        if (e) {
+                            console.log('Unable to remove auth notice', e);
+                        }
+                    });
+                }
             }
-        },{
-            overwrite:true
-        },(e)=>{
-            if(e) {
-                console.log('Unable to remove auth notice', e);
-            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
         });
     });
 
     //Remove Authorization handled Event
     socket.on('removeEventAprvl',(item)=>{
-        User.findOneAndUpdate({
-            iD:item.iD
-        },{
-            $pull:{
-                w8nApproval_Event: ObjectID(item.noticeiD)
+        // User.findOneAndUpdate({
+        //     iD:item.iD
+        // },{
+        //     $pull:{
+        //         w8nApproval_Event: ObjectID(item.noticeiD)
+        //     }
+        // },{
+        //     overwrite:true
+        // },(e)=>{
+        //     if(e) {
+        //         console.log('Unable to remove auth notice', e);
+        //     }
+        // });
+        User.findOne({iD:item.iD}).then((docs)=>{
+            for (var indx = 0; indx < docs.w8nApproval_Event.length; ++indx){
+                var notce = docs.w8nApproval_Event[indx];
+                //console.log(notce.iD.toString(),ObjectID(notice.iD).toString());
+                if((notce.iD.toString()==ObjectID(item.noticeiD).toString())&&(notce.read.toString()=="true")) {
+                    User.findOneAndUpdate({
+                        iD: item.iD
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    }, {
+                        $pull: {
+                            w8nApproval_Event: {iD: ObjectID(item.noticeiD), read: true}
+                        }
+                    }, {
+                        overwrite: true
+                    }, (e) => {
+                        if (e) {
+                            console.log('Unable to remove auth notice', e);
+                        }
+                    });
+                }
+
+                else if((notce.iD.toString()==ObjectID(item.noticeiD).toString())&&(notce.read.toString()=="false")) {
+                    User.findOneAndUpdate({
+                        iD: item.iD
+                        // 'intended_ID.iD': ObjectID(notice.iD)
+                    }, {
+                        $pull: {
+                            w8nApproval_Event: {iD: ObjectID(item.noticeiD), read: false}
+                        }
+                    }, {
+                        overwrite: true
+                    }, (e) => {
+                        if (e) {
+                            console.log('Unable to remove auth notice', e);
+                        }
+                    });
+                }
             }
-        },{
-            overwrite:true
-        },(e)=>{
-            if(e) {
-                console.log('Unable to remove auth notice', e);
-            }
+        }, (err)=>{
+            console.log('Unable to find notice',err);
         });
+
     });
 
     //Get Creator for new notice
@@ -1207,6 +1676,7 @@ io.on('connection',(socket)=>{
                 sender:docs.sender,
                 content: docs.content,
                 receivers: docs.receivers,
+                state:docs.state
             });
 
         }, (err)=>{
@@ -1227,7 +1697,9 @@ io.on('connection',(socket)=>{
         },{
             overwrite:true
         },(e,doc)=>{
-            updateApproveronCreate(editRegNotice.approver,doc._id);
+            if(editRegNotice.state!="new") {
+                updateApproveronCreate(doc.approver, doc._id);
+            }
             if(e) {
                 console.log('Unable to remove auth notice', e);
             }
@@ -1243,7 +1715,8 @@ io.on('connection',(socket)=>{
                 sender:docs.sender,
                 content: docs.content,
                 receivers: docs.receivers,
-                exDate:docs.exDate
+                exDate:docs.exDate,
+                state:docs.state
             });
 
         }, (err)=>{
@@ -1266,7 +1739,9 @@ io.on('connection',(socket)=>{
         },{
             overwrite:true
         },(e,doc)=>{
-            updateApproveronADCreate(editRegNotice.approver,doc._id);
+            if(editRegNotice.state!="new") {
+                updateApproveronCreate(doc.approver, doc._id);
+            }
             if(e) {
                 console.log('Unable to remove auth notice', e);
             }
@@ -1282,7 +1757,8 @@ io.on('connection',(socket)=>{
                 sender:docs.sender,
                 content: docs.content,
                 receivers: docs.receivers,
-                exDate:docs.exDate
+                exDate:docs.exDate,
+                state:docs.state
             });
 
         }, (err)=>{
@@ -1305,7 +1781,9 @@ io.on('connection',(socket)=>{
         },{
             overwrite:true
         },(e,doc)=>{
-            updateApproveronEventCreate(editRegNotice.approver,doc._id);
+            if(editRegNotice.state!="new") {
+                updateApproveronCreate(doc.approver, doc._id);
+            }
             if(e) {
                 console.log('Unable to edit notice -EventEdit', e);
             }
@@ -1331,7 +1809,7 @@ function updateSeparteUsers(recei,noticeID) {
         iD:recei
     },{
         $push:{
-            intended_ID: ObjectID(noticeID)
+            intended_ID: {iD:ObjectID(noticeID),read:true}
         }
     },{
         overwrite:true
@@ -1381,7 +1859,7 @@ function updateEventSeparteUsers(recei,noticeID) {
         iD:recei
     },{
         $push:{
-            event_ID: ObjectID(noticeID)
+            event_ID: {iD:ObjectID(noticeID),read:true}
         }
     },{
         overwrite:true
@@ -1450,7 +1928,7 @@ function updateApproveronCreate(approverID,noticeID) {
         iD:approverID
     },{
         $push:{
-            w8nApproval: ObjectID(noticeID)
+            w8nApproval: {iD:ObjectID(noticeID),read:true}
         }
     },{
         overwrite:true
@@ -1467,7 +1945,7 @@ function updateApproveronADCreate(approverID,noticeID) {
         iD:approverID
     },{
         $push:{
-            w8nApproval_AD: ObjectID(noticeID)
+            w8nApproval_AD: {iD:ObjectID(noticeID),read:true}
         }
     },{
         overwrite:true
@@ -1484,7 +1962,7 @@ function updateApproveronEventCreate(approverID,noticeID) {
         iD:approverID
     },{
         $push:{
-            w8nApproval_Event: ObjectID(noticeID)
+            w8nApproval_Event: {iD:ObjectID(noticeID),read:true}
         }
     },{
         overwrite:true
@@ -1582,3 +2060,4 @@ function checkForExpirations() {
         console.log("Still the same day");
     }
 }
+

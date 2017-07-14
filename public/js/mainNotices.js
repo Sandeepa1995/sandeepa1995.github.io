@@ -188,6 +188,9 @@ function  refresh() {
         //     index:loggedID
         // });
     }
+
+    getNotifications();
+
     setTimeout(loadADs,500);
     setTimeout(sortBoth,500);
     setTimeout(sortGenView,500);
@@ -198,7 +201,7 @@ function sortGenView() {
     arrayGenView.sort(function(a,b){
         return new Date(a[0]) - new Date(b[0]);
     });
-    console.log(arrayGenView);
+    //console.log(arrayGenView);
 }
 
 socket.on('giveGenItem',(noticeDetails)=>{
@@ -221,6 +224,10 @@ function genViewFunc() {
     getGenItem();
     intervalScope=setInterval(getGenItem, 15000);
 
+    // if (indGenView==arrayGenView.length){
+    //     refresh();
+    // }
+
     function getGenItem() {
         // if(!isgenView){
         //     clearInterval(intervalScope);
@@ -228,8 +235,10 @@ function genViewFunc() {
         // }
         if (indGenView==arrayGenView.length){
             indGenView=0;
+            //refresh();
         }
-        console.log(indGenView);
+        //console.log(indGenView);
+        console.log(arrayGenView);
         socket.emit('getGenItem', {
             iD: arrayGenView[indGenView%arrayGenView.length][1],
             type: arrayGenView[indGenView%arrayGenView.length][2]
@@ -277,7 +286,8 @@ socket.on('loadNoticesList',function(noticeList){
         for (var indx = 0; indx < noticeList.intended.length; ++indx) {
             //console.log(noticeList.intended[indx]);
             socket.emit('getNDetails', {
-                iD: noticeList.intended[indx]
+                iD: noticeList.intended[indx].iD,
+                read: noticeList.intended[indx].read
             });
         }
     }
@@ -313,7 +323,9 @@ socket.on('loadNoticesList',function(noticeList){
         for (var indx7 = 0; indx7 < noticeList.events.length; ++indx7) {
             //console.log(noticeList.intended[indx]);
             socket.emit('getEventDetails', {
-                iD: noticeList.events[indx7]
+                iD: noticeList.events[indx7].iD,
+                read: noticeList.events[indx7].read
+                //iD: noticeList.events[indx7]
             });
         }
     }
@@ -334,7 +346,8 @@ socket.on('searchNoticesList',function(noticeList){
         for (var indx = 0; indx < noticeList.intended.length; ++indx) {
             //console.log(noticeList.intended[indx]);
             socket.emit('searchNDetails', {
-                iD: noticeList.intended[indx],
+                iD: noticeList.intended[indx].iD,
+                read: noticeList.intended[indx].read,
                 search: noticeList.search
             });
         }
@@ -349,7 +362,7 @@ socket.on('searchNoticesList',function(noticeList){
             });
         }
     }
-
+    //
     if(noticeList.aDs!=undefined) {
         for (var indx4 = 0; indx4 < noticeList.aDs.length; ++indx4) {
             //console.log(noticeList.intended[indx]);
@@ -374,7 +387,8 @@ socket.on('searchNoticesList',function(noticeList){
         for (var indx7 = 0; indx7 < noticeList.events.length; ++indx7) {
             //console.log(noticeList.intended[indx]);
             socket.emit('searchEventDetails', {
-                iD: noticeList.events[indx7],
+                iD: noticeList.events[indx7].iD,
+                read: noticeList.events[indx7].read,
                 search: noticeList.search
             });
         }
@@ -402,12 +416,12 @@ socket.on('searchNoticesList',function(noticeList){
 // });
 
 socket.on('loadAuthNoticesList',function(noticeList){
-    //console.log(noticeList.toApprove);
+    //console.log(noticeList);
     if(noticeList.intended!=undefined) {
         for (var indx = 0; indx < noticeList.intended.length; ++indx) {
-            //console.log(noticeList.intended[indx]);
             socket.emit('getNDetails', {
-                iD: noticeList.intended[indx]
+                iD: noticeList.intended[indx].iD,
+                read: noticeList.intended[indx].read
             });
         }
     }
@@ -425,7 +439,8 @@ socket.on('loadAuthNoticesList',function(noticeList){
         for (var indx3 = 0; indx3 < noticeList.toApprove.length; ++indx3) {
             //console.log(noticeList.toApprove[indx3]);
             socket.emit('getADetails', {
-                iD: noticeList.toApprove[indx3]
+                iD: noticeList.toApprove[indx3].iD,
+                read: noticeList.toApprove[indx3].read
             });
         }
     }
@@ -452,7 +467,8 @@ socket.on('loadAuthNoticesList',function(noticeList){
         for (var indx6 = 0; indx6 < noticeList.toApproveAD.length; ++indx6) {
             //console.log(noticeList.toApprove[indx3]);
             socket.emit('getADADetails', {
-                iD: noticeList.toApproveAD[indx6]
+                iD: noticeList.toApproveAD[indx6].iD,
+                read: noticeList.toApproveAD[indx6].read
             });
         }
     }
@@ -461,7 +477,8 @@ socket.on('loadAuthNoticesList',function(noticeList){
         for (var indx7 = 0; indx7 < noticeList.events.length; ++indx7) {
             //console.log(noticeList.intended[indx]);
             socket.emit('getEventDetails', {
-                iD: noticeList.events[indx7]
+                iD: noticeList.events[indx7].iD,
+                read: noticeList.events[indx7].read
             });
         }
     }
@@ -479,7 +496,8 @@ socket.on('loadAuthNoticesList',function(noticeList){
         for (var indx9 = 0; indx9 < noticeList.toApproveEvent.length; ++indx9) {
             //console.log(noticeList.toApprove[indx3]);
             socket.emit('getEventADetails', {
-                iD: noticeList.toApproveEvent[indx9]
+                iD: noticeList.toApproveEvent[indx9].iD,
+                read: noticeList.toApproveEvent[indx9].read
             });
         }
     }
@@ -491,7 +509,8 @@ socket.on('searchAuthNoticesList',function(noticeList){
         for (var indx = 0; indx < noticeList.intended.length; ++indx) {
             //console.log(noticeList.intended[indx]);
             socket.emit('searchNDetails', {
-                iD: noticeList.intended[indx],
+                iD: noticeList.intended[indx].iD,
+                read: noticeList.intended[indx].read,
                 search: noticeList.search
             });
         }
@@ -511,7 +530,8 @@ socket.on('searchAuthNoticesList',function(noticeList){
         for (var indx3 = 0; indx3 < noticeList.toApprove.length; ++indx3) {
             //console.log(noticeList.toApprove[indx3]);
             socket.emit('searchADetails', {
-                iD: noticeList.toApprove[indx3],
+                iD: noticeList.toApprove[indx3].iD,
+                read: noticeList.toApprove[indx3].read,
                 search: noticeList.search
             });
         }
@@ -541,7 +561,8 @@ socket.on('searchAuthNoticesList',function(noticeList){
         for (var indx6 = 0; indx6 < noticeList.toApproveAD.length; ++indx6) {
             //console.log(noticeList.toApprove[indx3]);
             socket.emit('searchADADetails', {
-                iD: noticeList.toApproveAD[indx6],
+                iD: noticeList.toApproveAD[indx6].iD,
+                read: noticeList.toApproveAD[indx6].read,
                 search: noticeList.search
             });
         }
@@ -551,7 +572,8 @@ socket.on('searchAuthNoticesList',function(noticeList){
         for (var indx7 = 0; indx7 < noticeList.events.length; ++indx7) {
             //console.log(noticeList.intended[indx]);
             socket.emit('searchEventDetails', {
-                iD: noticeList.events[indx7],
+                iD: noticeList.events[indx7].iD,
+                read: noticeList.events[indx7].read,
                 search: noticeList.search
             });
         }
@@ -571,7 +593,8 @@ socket.on('searchAuthNoticesList',function(noticeList){
         for (var indx9 = 0; indx9 < noticeList.toApproveEvent.length; ++indx9) {
             //console.log(noticeList.toApprove[indx3]);
             socket.emit('searchEventADetails', {
-                iD: noticeList.toApproveEvent[indx9],
+                iD: noticeList.toApproveEvent[indx9].iD,
+                read: noticeList.toApproveEvent[indx9].read,
                 search: noticeList.search
             });
         }
@@ -581,7 +604,13 @@ socket.on('searchAuthNoticesList',function(noticeList){
 socket.on('giveNDetails',(noticeDetails)=>{
     //console.log(noticeDetails);
     if (noticeDetails.state =="approved"){
-        var noticeDetailItem = "<tr data-toggle='modal' data-target='#displayModal' style='cursor: pointer' onclick='clickDetail("+indNum+")'><td>"+noticeDetails.sender+"</td><td>"+noticeDetails.title+"</td> <td>"+noticeDetails.typeN+"</td><td>"+noticeDetails.date+"</td> </tr>";
+        if(noticeDetails.read) {
+            //console.log('it is bold');
+            var noticeDetailItem = "<tr data-toggle='modal' data-target='#displayModal' style='cursor: pointer;font-weight:bolder' onclick='clickDetail(this," + indNum + ")'><td>" + noticeDetails.sender + "</td><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td> </tr>";
+        }
+        else{
+            var noticeDetailItem = "<tr data-toggle='modal' data-target='#displayModal' style='cursor: pointer' onclick='clickDetail(this," + indNum + ")'><td>" + noticeDetails.sender + "</td><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td> </tr>";
+        }
         $("#noticeDetailTable").append(noticeDetailItem);
         indNum+=1;
         arrayDetailNotices.push(noticeDetails.id);
@@ -606,7 +635,12 @@ socket.on('giveSDetails',(noticeDetails)=>{
 
 socket.on('giveADetails',(noticeDetails)=>{
     //console.log(noticeDetails);
-    var noticeDetailItem = "<tr style='cursor: pointer' ><td>"+noticeDetails.title+"</td> <td>" + noticeDetails.typeN + "</td><td>"+noticeDetails.date+"</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthDetail("+indAuth+")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveNotice("+indAuth+")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveNotice("+indAuth+")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    if(noticeDetails.read) {
+        var noticeDetailItem = "<tr style='cursor: pointer; font-weight:bolder' ><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthDetail(this," + indAuth + ")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveNotice(" + indAuth + ")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveNotice(" + indAuth + ")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    }
+    else {
+        var noticeDetailItem = "<tr style='cursor: pointer' ><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthDetail(this," + indAuth + ")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveNotice(" + indAuth + ")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveNotice(" + indAuth + ")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    }
     $("#authDetailTable").append(noticeDetailItem);
     indAuth+=1;
     arrayAuthNotices.push(noticeDetails.id);
@@ -643,7 +677,11 @@ socket.on('giveADSDetails',(noticeDetails)=>{
 //Populate Auth ADs
 socket.on('giveADADetails',(noticeDetails)=>{
     //console.log(noticeDetails);
-    var noticeDetailItem = "<tr style='cursor: pointer' ><td>"+noticeDetails.title+"</td> <td>" + noticeDetails.typeN + "</td><td>"+noticeDetails.date+"</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthADDetail("+indADAuth+")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveAD("+indADAuth+")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveAD("+indADAuth+")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    if(noticeDetails.read) {
+        var noticeDetailItem = "<tr style='cursor: pointer; font-weight:bolder' ><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthADDetail(this," + indADAuth + ")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveAD(" + indADAuth + ")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveAD(" + indADAuth + ")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    }else {
+        var noticeDetailItem = "<tr style='cursor: pointer' ><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthADDetail(this," + indADAuth + ")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveAD(" + indADAuth + ")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveAD(" + indADAuth + ")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    }
     indADAuth+=1;
     $("#authDetailTable").append(noticeDetailItem);
     arrayAuthADs.push(noticeDetails.id);
@@ -653,7 +691,11 @@ socket.on('giveADADetails',(noticeDetails)=>{
 socket.on('giveEventDetails',(noticeDetails)=>{
     //console.log(noticeDetails);
     if ((noticeDetails.state =="approved")||(noticeDetails.state =="new")){
-        var noticeDetailItem = "<tr data-toggle='modal' data-target='#displayModal' style='cursor: pointer' onclick='clickEventDetail("+indEvent+")'><td>"+noticeDetails.sender+"</td><td>"+noticeDetails.title+"</td> <td>"+noticeDetails.typeN+"</td><td>"+noticeDetails.date+"</td> </tr>";
+        if(noticeDetails.read) {
+            var noticeDetailItem = "<tr data-toggle='modal' data-target='#displayModal' style='cursor: pointer; font-weight:bolder' onclick='clickEventDetail(this," + indEvent + ")'><td>" + noticeDetails.sender + "</td><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td> </tr>";
+        }else {
+            var noticeDetailItem = "<tr data-toggle='modal' data-target='#displayModal' style='cursor: pointer' onclick='clickEventDetail(this," + indEvent + ")'><td>" + noticeDetails.sender + "</td><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td> </tr>";
+        }
         $("#noticeDetailTable").append(noticeDetailItem);
         indEvent+=1;
         arrayDetailEvents.push(noticeDetails.id);
@@ -684,7 +726,11 @@ socket.on('giveEventSDetails',(noticeDetails)=>{
 //Populate Auth Events
 socket.on('giveEventADetails',(noticeDetails)=>{
     //console.log(noticeDetails);
-    var noticeDetailItem = "<tr style='cursor: pointer' ><td>"+noticeDetails.title+"</td> <td>" + noticeDetails.typeN + "</td><td>"+noticeDetails.date+"</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthEventDetail("+indEventAuth+")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveEvent("+indEventAuth+")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveEvent("+indEventAuth+")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    if (noticeDetails.state =="approved") {
+        var noticeDetailItem = "<tr style='cursor: pointer ; font-weight:bolder' ><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthEventDetail(this," + indEventAuth + ")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveEvent(" + indEventAuth + ")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveEvent(" + indEventAuth + ")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    }else {
+        var noticeDetailItem = "<tr style='cursor: pointer' ><td>" + noticeDetails.title + "</td> <td>" + noticeDetails.typeN + "</td><td>" + noticeDetails.date + "</td><td><button class='btn btn-success pull-right' data-toggle='modal' data-target='#displayModal' onclick='clickAuthEventDetail(this," + indEventAuth + ")'>View</button></td><td><button class='btn btn-info pull-right' onclick='approveEvent(" + indEventAuth + ")'><i class='material-icons'>thumb_up</i> Approve</button></td><td><button class='btn btn-danger pull-right' onclick='diapproveEvent(" + indEventAuth + ")' ><i class='material-icons'>thumb_down</i> Disapprove</button></td></tr>";
+    }
     $("#authDetailTable").append(noticeDetailItem);
     indEventAuth+=1;
     arrayAuthEvents.push(noticeDetails.id);
@@ -766,17 +812,27 @@ socket.on('newNotice',function(notice) {
     // location.href='index.html';
 });
 
-function clickDetail(ind) {
+function clickDetail(row,ind) {
+    row.style.fontWeight='normal';
     //console.log(arrayDetailNotices[ind]);
     socket.emit('getNoticeDis',{
         iD:arrayDetailNotices[ind]
     });
+    socket.emit('readNoticeDis',{
+        iD:arrayDetailNotices[ind],
+        user:loggedID
+    });
 }
 
-function clickEventDetail(ind) {
+function clickEventDetail(row,ind) {
     //console.log(arrayDetailNotices[ind]);
+    row.style.fontWeight='normal';
     socket.emit('getEventDis',{
         iD:arrayDetailEvents[ind]
+    });
+    socket.emit('readEventDis',{
+        iD:arrayDetailEvents[ind],
+        user:loggedID
     });
 }
 
@@ -841,24 +897,42 @@ function clickSentEventDetail(ind) {
     });
 }
 
-function clickAuthDetail(ind) {
+function clickAuthDetail(row,ind) {
     //console.log(arrayDetailNotices[ind]);
+    var rowp = row.closest('tr');
+    rowp.style.fontWeight='normal';
     socket.emit('getSentDis',{
         iD:arrayAuthNotices[ind]
     });
-}
-
-function clickAuthADDetail(ind) {
-    //console.log(arraySentADs[ind]);
-    socket.emit('getSentADDis',{
-        iD:arrayAuthADs[ind]
+    socket.emit('readAuthDis',{
+        iD:arrayAuthNotices[ind],
+        user:loggedID
     });
 }
 
-function clickAuthEventDetail(ind) {
+function clickAuthADDetail(row,ind) {
     //console.log(arraySentADs[ind]);
+    var rowp = row.closest('tr');
+    rowp.style.fontWeight='normal';
+    socket.emit('getSentADDis',{
+        iD:arrayAuthADs[ind]
+    });
+    socket.emit('readAuthADDis',{
+        iD:arrayAuthADs[ind],
+        user:loggedID
+    });
+}
+
+function clickAuthEventDetail(row,ind) {
+    //console.log(arraySentADs[ind]);
+    var rowp = row.closest('tr');
+    rowp.style.fontWeight='normal';
     socket.emit('getSentEventDis',{
         iD:arrayAuthEvents[ind]
+    });
+    socket.emit('readAuthEventDis',{
+        iD:arrayAuthEvents[ind],
+        user:loggedID
     });
 }
 
@@ -1600,5 +1674,25 @@ function searchNotice() {
 
 }
 
+function getNotifications() {
+    socket.emit('getNotifics',{
+        index:loggedID
+    });
+}
 
+socket.on('giveNotifics',(nums)=>{
+    var cnt=nums.notiNum+nums.authNum;
+    document.getElementById("globalNotifications").innerHTML = "";
+
+    if(nums.notiNum!=0) {
+        var notiNot = '<li><a href="mainNotices.html">' + nums.notiNum + ' New Notices in Inbox</a></li>';
+        $("#globalNotifications").append(notiNot);
+    }
+    if(nums.authNum!=0) {
+        var authNot = '<li><a href="mainNotices.html">' + nums.authNum + ' New Notices to be Approved</a></li>';
+        $("#globalNotifications").append(authNot);
+    }
+    document.getElementById("notificationsNumber").innerHTML = cnt;
+    document.getElementById("notificationsNumber").style.visibility = 'visible';
+});
 

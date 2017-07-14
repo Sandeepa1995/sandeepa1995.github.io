@@ -12,6 +12,7 @@ var alledittargets=[];
 var checkEditNum=0;
 var noticeID = sessionStorage.getItem('editID');
 var targetEditGrp;
+var thisState;
 
 function showSpeci() {
     document.getElementById("specificOptions").style.display='block';
@@ -33,8 +34,9 @@ function finishEditAD() {
             title: newTitile,
             content: newContent,
             iD:noticeID,
-            approver:sessionStorage.getItem('approverID'),
-            exDate:newExpDate
+            //approver:sessionStorage.getItem('approverID'),
+            exDate:newExpDate,
+            state:thisState
         });
         location.href='mainNotices.html';
     }
@@ -94,6 +96,7 @@ socket.on('giveEditADDetails',(notice)=>{
         console.log(notice.exDate);
     }
     targetEditGrp=notice.receivers;
+    thisState=notice.state;
     // for (var indx = 0; indx < alledittargets.length; ++indx) {
     //     if (notice.receivers.indexOf(alledittargets[indx])==-1){
     //
