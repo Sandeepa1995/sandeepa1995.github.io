@@ -3,35 +3,33 @@ layout: home
 title: Home
 ---
 
-## Hello, I'm **Your Name**
+## Hi, I'm Damitha****
 
-I'm a PhD student in Computer Science at [University Name](https://university.edu), working on machine learning and computer vision. My research focuses on [brief description of your research interests].
+I'm a PhD student in [Computer Science at University of Illinois at Urbana-Champaign](https://siebelschool.illinois.edu/), working in the intersection of machine learning and optimizations/compilers. My thesis is focused on [GALA](https://dl.acm.org/doi/10.1145/3763113): a GNN Domain Specific Language (DSL) and Compiler that can combine and explore optimizations at multiple granularities.
 
-I'm advised by [Professor Name](https://professor-website.com) and am part of the [Research Lab Name](https://lab-website.com).
+I'm advised by [Prof. Charith Mendis](https://charithmendis.com/) and am part of the [ADAPT](https://adapt.cs.illinois.edu/) group.
 
 ### Research Interests
 
+- Optimizations
+- Compilers 
 - Machine Learning
-- Computer Vision
-- Natural Language Processing
-- Deep Learning
+- Sparse Tensor Operations
 
 ### Education
 
-**PhD in Computer Science** (Expected 2027)  
-University Name
+**PhD in Computer Science** (Expected graduation date: January 2027)  
+University of Illinois at Urbana-Champaign
 
-**Master of Science in Computer Science** (2023)  
-Previous University Name
-
-**Bachelor of Science in Computer Science** (2021)  
-Undergraduate University Name
+**Bachelor of Science in Computer Science and Engineering** (2020)  
+University of Moratuwa
 
 ### News
 
-- **Jan 2024** - Paper accepted at CVPR 2024!
-- **Dec 2023** - Presented our work at NeurIPS 2023
-- **Sep 2023** - Started PhD at University Name
+- **Feb 2026** - Presented our work on [GRANII]() at CGO'26!
+- **May 2024** - I'll be interning this summer at Samsung Semiconductor as a Compiler Research Intern!
+- **Oct 2025** - Presented our work on [GALA](https://dl.acm.org/doi/10.1145/3763113) at OOPSLA'25!
+- **Aug 2021** - Started PhD at UIUC!
 - **Jun 2023** - Awarded Best Paper at XYZ Conference
 
 ### Contact
