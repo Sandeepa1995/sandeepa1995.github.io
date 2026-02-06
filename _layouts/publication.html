@@ -1,0 +1,22 @@
+---
+layout: default
+---
+
+<div class="publication-detail">
+  <h1>{{ page.title }}</h1>
+  
+  <p class="pub-authors">{{ page.authors }}</p>
+  <p class="pub-venue">{{ page.venue }} {{ page.year }}</p>
+  
+  {% if page.links %}
+  <div class="pub-links">
+    {% for link in page.links %}
+    <a href="{{ link.url }}" class="pub-link">{{ link.name }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  <div class="pub-content">
+    {{ content }}
+  </div>
+</div>

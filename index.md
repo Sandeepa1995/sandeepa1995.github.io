@@ -29,8 +29,7 @@ University of Moratuwa
 - **Feb 2026** - Presented our work on [GRANII]() at CGO'26!
 - **May 2024** - I'll be interning this summer at Samsung Semiconductor as a Compiler Research Intern!
 - **Oct 2025** - Presented our work on [GALA](https://dl.acm.org/doi/10.1145/3763113) at OOPSLA'25!
-- **Aug 2021** - Started PhD at UIUC!
-- **Jun 2023** - Awarded Best Paper at XYZ Conference
+- **Aug 2021** - Started a PhD at UIUC!
 
 ### Contact
 

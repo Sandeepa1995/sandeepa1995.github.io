@@ -1,0 +1,24 @@
+<div class="publication">
+  <h3 class="pub-title">
+    {% if include.pub.url %}
+    <a href="{{ include.pub.url }}">{{ include.pub.title }}</a>
+    {% else %}
+    {{ include.pub.title }}
+    {% endif %}
+  </h3>
+  
+  <p class="pub-authors">{{ include.pub.authors }}</p>
+  <p class="pub-venue">{{ include.pub.venue }} {{ include.pub.year }}</p>
+  
+  {% if include.pub.description %}
+  <p class="pub-description">{{ include.pub.description }}</p>
+  {% endif %}
+  
+  {% if include.pub.links %}
+  <div class="pub-links">
+    {% for link in include.pub.links %}
+    <a href="{{ link.url }}" class="pub-link" target="_blank">{{ link.name }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
