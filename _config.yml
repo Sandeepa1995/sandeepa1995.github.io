@@ -1,0 +1,62 @@
+# Site settings
+title: Damitha Lenadora
+email: damitha2@illinois.edu
+description: >- # this means to ignore newlines
+  PhD Student in Computer Science at University of Illinois at Urbana-Champaign.
+  Research interests in the intersection of machine learning and optimization/compilers.
+
+# Your information
+author: Damitha Lenadora
+university: University of illinois at Urbana-Champaign
+department: Department of Computer Science
+position: PhD Student
+advisor: Prof. Charith Mendis
+lab: ADAPT
+
+# Social media and links
+github_username: Sandeepa1995
+linkedin_username: damitha-sandeepa-lenadora
+google_scholar: TliTjHMAAAAJ
+# twitter_username: yourusername  # optional
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+# Collections for organizing content
+collections:
+  publications:
+    output: true
+    permalink: /publications/:title/
+  projects:
+    output: true
+    permalink: /projects/:title/
+
+# Default front matter
+defaults:
+  - scope:
+      path: ""
+      type: "publications"
+    values:
+      layout: "publication"
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: "project"
+
+# Exclude files from build
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor/
+
+# Permalink structure
+permalink: /:title/
+
+# Timezone
+timezone: America/New_York  # Change to your timezone
