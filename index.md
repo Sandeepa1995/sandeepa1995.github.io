@@ -1,12 +1,7 @@
 ---
-layout: home
-title: Damitha Lenadora
-
 Email: damitha2 (at) illinois.edu
 
-<img src="/assets/images/profile.JPG" alt="Damitha Lenadora" style="width: 200px; border-radius: 50%; margin: 2rem 0;">
-
-##  Quick Summary
+<img src="/assets/images/profile.JPG" alt="Damitha Lenadora" style="width: 200px; border-radius: 5%; margin: 2rem 0;">
 
 I'm a PhD student in [Computer Science at University of Illinois at Urbana-Champaign](https://siebelschool.illinois.edu/), working in the intersection of machine learning and optimizations/compilers. My thesis is focused on [GALA](https://dl.acm.org/doi/10.1145/3763113): a GNN Domain Specific Language (DSL) and Compiler that can combine and explore optimizations at multiple granularities.
 

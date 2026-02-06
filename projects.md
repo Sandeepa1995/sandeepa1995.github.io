@@ -4,11 +4,11 @@ title: Projects
 permalink: /projects/
 ---
 
-Here are some of my research and side projects.
+TODO
 
 ---
 
-{% assign sorted_projects = site.projects | sort: 'date' | reverse %}
+<!-- {% assign sorted_projects = site.projects | sort: 'date' | reverse %}
 {% for project in sorted_projects %}
 <div class="project-card">
   <h3><a href="{{ project.url }}">{{ project.title }}</a></h3>
@@ -31,4 +31,4 @@ Here are some of my research and side projects.
   </div>
   {% endif %}
 </div>
-{% endfor %}
+{% endfor %} -->
