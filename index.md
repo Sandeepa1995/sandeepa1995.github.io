@@ -1,9 +1,12 @@
+{% assign current_year = 'now' | date: "%Y" | plus: 0 %}
+{% assign phd_year = current_year | minus: 2020 %}
+
 <div style="display: flex; gap: 2rem; align-items: center; margin-bottom: 2rem;">
   <div style="flex: 1;">
     <img src="/assets/images/profile.JPG" alt="Damitha Lenadora" style="width: 200px; border-radius: 5%; margin: 2rem 0;">
   </div>
   <div style="flex: 2;">
-    <p>PhD. Student at UIUC</p>
+    <p>PhD. Student at UIUC ({{ phd_year }}th year)</p>
     <p>Compilers/Optimizations for ML and vice-versa.</p>
     <p>Email: damitha2 (at) illinois.edu</p>
   </div>
