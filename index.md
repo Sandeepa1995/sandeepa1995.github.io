@@ -15,7 +15,6 @@
     <p>PhD. Student at UIUC ({{ phd_year }}th year)</p>
     <p>Compilers/Optimizations for ML and vice-versa.</p>
     <p>Email: damitha2 (at) illinois.edu</p>
-    [CV (PDF)](/assets/cv.pdf)
   </div>
 </div>
 
