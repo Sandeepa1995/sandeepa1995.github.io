@@ -1,5 +1,11 @@
 {% assign current_year = 'now' | date: "%Y" | plus: 0 %}
-{% assign phd_year = current_year | minus: 2020 %}
+{% assign current_month = 'now' | date: "%-m" | plus: 0 %}
+{% assign phd_year = current_year | minus: 2021 %}
+{% if current_month < 8 %}
+  {% assign phd_year = phd_year %}
+{% else %}
+  {% assign phd_year = phd_year | plus: 1 %}
+{% endif %}
 
 <div style="display: flex; gap: 2rem; align-items: center; margin-bottom: 2rem;">
   <div style="flex: 1;">
