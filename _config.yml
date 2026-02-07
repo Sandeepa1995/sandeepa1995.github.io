@@ -31,9 +31,9 @@ collections:
   publications:
     output: true
     permalink: /publications/:title/
-  projects:
-    output: true
-    permalink: /projects/:title/
+  # projects:
+  #   output: true
+  #   permalink: /projects/:title/
 
 # Default front matter
 defaults:
@@ -42,11 +42,11 @@ defaults:
       type: "publications"
     values:
       layout: "publication"
-  - scope:
-      path: ""
-      type: "projects"
-    values:
-      layout: "project"
+  # - scope:
+  #     path: ""
+  #     type: "projects"
+  #   values:
+  #     layout: "project"
 
 # Exclude files from build
 exclude:

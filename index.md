@@ -1,7 +1,15 @@
----
-Email: damitha2 (at) illinois.edu
+<div style="display: flex; gap: 2rem; align-items: start; margin-bottom: 2rem;">
+  <div style="flex: 2;">
+    <p>Email: damitha2 (at) illinois.edu</p>
+  </div>
+  <div style="flex: 1;">
+    <img src="/assets/images/profile.JPG" alt="Damitha Lenadora" style="width: 200px; border-radius: 5%; margin: 2rem 0;">
+  </div>
+</div>
 
-<img src="/assets/images/profile.JPG" alt="Damitha Lenadora" style="width: 200px; border-radius: 5%; margin: 2rem 0;">
+<!-- <img src="/assets/images/profile.JPG" alt="Damitha Lenadora" style="width: 200px; border-radius: 5%; margin: 2rem 0;"> -->
+
+### About Me
 
 I'm a PhD student in [Computer Science at University of Illinois at Urbana-Champaign](https://siebelschool.illinois.edu/), working in the intersection of machine learning and optimizations/compilers. My thesis is focused on [GALA](https://dl.acm.org/doi/10.1145/3763113): a GNN Domain Specific Language (DSL) and Compiler that can combine and explore optimizations at multiple granularities.
 
@@ -24,7 +32,7 @@ University of Moratuwa
 
 ### News
 
-- **Feb 2026** - Presented our work on [GRANII]() at CGO'26!
+- **Feb 2026** - Presented our work on [GRANII](https://charithmendis.com/assets/pdf/26-cgo-granii.pdf) at CGO'26!
 - **May 2024** - I'll be interning this summer at Samsung Semiconductor as a Compiler Research Intern!
 - **Oct 2025** - Presented our work on [GALA](https://dl.acm.org/doi/10.1145/3763113) at OOPSLA'25!
 - **Aug 2021** - Started a PhD at UIUC!
